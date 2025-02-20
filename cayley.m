@@ -1,3 +1,270 @@
+#####################Matrix#####################
+
+<--------------Find the Determinant Simply------------------->
+clc;clear;
+% Given matrix
+A = [-9 2 6; 5 0 -3; -16 4 11]
+det(A)
+% Store the scaling factor for determinant correction
+scale_factor = 1;
+
+% Making first column below pivot zero
+factor1 = A(2,1)/A(1,1);
+A(2,:) = A(2,:) - factor1 * A(1,:);
+
+factor2 = A(3,1)/A(1,1);
+A(3,:) = A(3,:) - factor2 * A(1,:);
+
+
+% Making second column below pivot zero
+factor3 = A(3,2)/A(2,2);
+A(3,:) = A(3,:) - factor3 * A(2,:);
+
+% Calculate determinant
+% The determinant is the product of the diagonal elements
+det_A = prod(diag(A)) * scale_factor;
+
+% Display results
+disp('Matrix after making first column zero below pivot:');
+disp(A);
+disp('Determinant of A:');
+disp(det_A);
+
+
+
+<-----------------Find the Determinant Using loop--------------------->
+clc;
+clear;
+
+% Given matrix
+A = [  0     2     6;
+     0     0    -3;
+   -16     4    11]
+disp('Determinant using MATLAB det function:');
+disp(det(A));
+
+% Check if the first element is zero and swap rows if necessary
+row_swap_count = 0;
+if A(1,1) == 0
+    % Check if row 2 has a nonzero element in column 1
+    if A(2,1) ~= 0
+        A([1, 2], :) = A([2, 1], :); % Swap row 1 and row 2
+    % Else check row 3
+    elseif A(3,1) ~= 0
+        A([1, 3], :) = A([3, 1], :); % Swap row 1 and row 3
+    else
+        disp('No nonzero pivot found in column 1');
+    end
+    row_swap_count = row_swap_count + 1; % Keep track of row swaps
+end
+
+% Row operations to convert into upper triangular form
+for i = 2:3 A(2,:);
+    factor = A(i,1) / A(1,1);
+    A(i,:) = A(i,:) - factor * A(1,:);
+end
+if A(2,2) == 0
+    A([2, 3], :) = A([3, 2], :); % Keep track of row swaps
+     row_swap_count = row_swap_count + 1;
+end
+
+for i = 3:3
+    factor = A(i,2) / A(2,2);
+    A(i,:) = A(i,:) - factor * A(2,:);
+end
+
+% Calculate determinant
+detter = A(1,1) * A(2,2) * A(3,3);
+
+% Adjust sign if row swaps occurred
+if mod(row_swap_count, 2) == 1
+    detter = -detter;
+end
+
+% Display results
+disp('Transformed Matrix A:');
+disp(A);
+disp('Determinant using manual calculation:');
+disp(detter);
+
+
+<-----Find the transpose----->
+clc;clear;
+% Given matrix
+A = [-9 2 6; 5 0 -3; -16 4 11]
+for i=1:3
+    for j=1:3
+        B(i,j)=A(j,i);
+    end
+end
+disp(B)
+
+
+
+<------------------Find the Rank Using Loop---------------------->
+clc; clear; close all;
+A = [0 0 4; 5 2 6;1 5 2;2 8 4;2 3 5]
+[m, n] = size(A);
+for i = 1:min(m,n)
+    if A(i,i) == 0
+        A([i,i+1],:)=A([i+1,i], : );
+   end
+    if A(i,i) ~= 0
+     A(i,:) = A(i,:) / A(i,i);  
+    end
+    
+   for j = i+1:m
+       A(j,:) = A(j,:) - A(j,i) * A(i,:);
+    end
+end
+A
+rank_A = sum(any(A, 2));
+disp(['Rank(A) = ', num2str(rank_A)]);
+
+
+
+<----------------Find the Rank Simply----------------->
+clc; clear; close all;
+A = [0 1 2; 3 1 0; 1 1 -1]
+
+% Row Echelon Form 
+A([1,2],:) = A([2,1],:);  
+
+A(1,:) = A(1,:) / A(1,1);
+
+A(2,:) = A(2,:) - A(2,1) * A(1,:);
+A(3,:) = A(3,:) - A(3,1) * A(1,:);
+
+A(2,:) = A(2,:) / A(2,2);
+
+A(3,:) = A(3,:) - A(3,2) * A(2,:);
+
+A(3,:) = A(3,:) / A(3,3);
+disp('Echelon Form of A:')
+disp(A);
+rank_A = sum(any(A, 2));
+disp(['Rank(A) = ', num2str(rank_A)]);
+
+
+<---------------find the inverse simlpy--------------->
+clc; clear; close all;
+B = [4 1 3;2 1 2;1 0 -1]
+inv(B)
+% Augmented Matrix 
+I = eye(3);
+A= [B I];
+disp('Step 1: Augmented Matrix [B | I]');
+disp(A);
+A(1,:) = A(1,:) / A(1,1);
+A(2,:) = A(2,:) - A(2,1) * A(1,:);
+A(3,:) = A(3,:) - A(3,1) * A(1,:);
+
+A(2,:) = A(2,:) / A(2,2);
+A(3,:) = A(3,:) - A(3,2) * A(2,:);
+
+A(3,:) = A(3,:) / A(3,3);
+
+A(2,:) = A(2,:) - A(2,3) * A(3,:);
+A(1,:) = A(1,:) - A(1,3) * A(3,:);
+A(1,:) = A(1,:) - A(1,2) * A(2,:);
+disp(A);
+inv_B = A(:,4:6);
+disp('Inverse of B:');
+disp(inv_B);
+
+
+<-----------------find the inverse using loop-----------------> 
+clc; clear; close all;
+B = [4 1 3;2 1 2;1 0 -1]
+disp(inv(B));
+% Augmented Matrix [B | I]
+I = eye(3);
+A = [B I];
+[m, n] = size(A);
+disp('Augmented Matrix [B | I]');
+disp(A);
+ for i = 1:min(m,n)
+   if A(i,i) == 0
+        A([i,i+1],:) = A([i+1,i], :);
+    end
+    if A(i,i) ~= 0
+        A(i,:) = A(i,:) / A(i,i);  
+    end
+    for j = i+1:m
+        A(j,:) = A(j,:) - A(j,i) * A(i,:);
+    end
+ end
+A
+for i = 1:m-1 
+    for j = i+1:m 
+        A(i,:) = A(i,:) - A(i,j) * A(j,:);
+    end
+end
+disp('Row Reduced Echelon Form:');
+disp(A);
+inv_B = A(:,4:6);
+disp('Inverse of B:');
+disp(inv_B);
+
+<----------------Find solution of a systems of linear eqauation simply---------------->
+clc;clear;close all;
+% Define the augmented matrix [A | b]
+A = [10 2 1 9; 
+     2 20 -2 -44; 
+     -2 3 10 22]
+A(1,:) = A(1,:) / A(1,1);
+A(2,:) = A(2,:) - A(2,1) * A(1,:);
+A(3,:) = A(3,:) - A(3,1) * A(1,:);
+
+A(2,:) = A(2,:) / A(2,2);
+A(3,:) = A(3,:) - A(3,2) * A(2,:);
+
+A(3,:) = A(3,:) / A(3,3);
+A
+%Making elements above the pivot zero
+A(1,:) = A(1,:) - A(1,2) * A(2,:);
+A(1,:) = A(1,:) - A(1,3) * A(3,:);
+A(2,:) = A(2,:) - A(2,3) * A(3,:);
+
+disp('Row Echelon Form :')
+disp(A);
+x = A(:,4);
+disp('Solution (x, y, z):');
+disp(x);
+
+
+<---------------Find solution of a systems of linear eqauation using loop--------------->
+clc; clear; close all;
+% Define the augmented matrix [A | b]
+A = [10 2 1 9; 
+     2 20 -2 -44; 
+     -2 3 10 22]
+[m, n] = size(A);
+ for i = 1:min(m,n)
+   if A(i,i) == 0
+        A([i,i+1],:) = A([i+1,i], :);
+    end
+    if A(i,i) ~= 0
+        A(i,:) = A(i,:) / A(i,i);  
+    end
+    for j = i+1:m
+        A(j,:) = A(j,:) - A(j,i) * A(i,:);
+    end
+ end
+A
+for i = 1:m-1 
+    for j = i+1:m 
+        A(i,:) = A(i,:) - A(i,j) * A(j,:);
+    end
+end
+disp('Row Echelon Form :')
+disp(A);
+x = A(:,n);  
+disp('Solution (x, y, z):');
+disp(x);
+
+
+<---------------Find the eigen values,eigen vectors and proof Cayley Hamilton------------->
 clc; clear; close all;
 A = [1 0 0; 0 2 0; 0 0 3]
 
@@ -17,4 +284,10 @@ fprintf('%.2fx^3 + %.2fx^2 + %.2fx + %.2f = 0\n', char_poly_A);
 P_A = polyvalm(char_poly_A, A);
 disp('P(A) for Matrix A:');
 disp(P_A); 
+
+
+
+
+
+
 
